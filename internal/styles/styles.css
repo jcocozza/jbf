@@ -1,0 +1,24 @@
+.container {
+  width: 50%;
+  height: 100vh;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.navbar {
+  background-color: #cccccc;
+  padding: 5px;
+  text-align: center;
+}
+.navbar a {
+  text-decoration: none;
+  color: black;
+  padding: 5px 15px;
+  border-right: 1px solid #888;
+}
+.navbar a:last-child {
+  border-right: none;
+}
+.navbar a:hover {
+  background-color: #aaaaaa;
+}
