@@ -41,7 +41,7 @@ Everything works out of the box with no customization.
 ### Layout
 
 Each file is wrapped in with the [layout file](internal/pandoc/layout.html).
-This takes advantage of Go's templating system. You can modify this file, or create your own. Simple just includ `{{ .Content }}` where you'd like your content to go.
+This takes advantage of Go's templating system. You can modify this file, or create your own. Simply just include `{{ .Content }}` where you'd like your content to go.
 
 ### Styling
 
