@@ -41,6 +41,7 @@ func help() {
 	fmt.Fprintln(os.Stdout, "Usage")
 	fmt.Fprintf(os.Stdout, "  %s <command> [options]\n", os.Args[0])
 	fmt.Fprintln(os.Stdout, "Commands:")
+	fmt.Fprintln(os.Stdout, "  init     set up the project")
 	fmt.Fprintln(os.Stdout, "  compile  compile input to html")
 	fmt.Fprintln(os.Stdout, "  serve    serve content")
 	fmt.Fprintln(os.Stdout, "  new      create a new file in the content directory")
@@ -61,6 +62,22 @@ func checkHelp(cmd *flag.FlagSet) bool {
 	return false
 }
 
+func initCmd() {
+	initCmd := flag.NewFlagSet("init", flag.ExitOnError)
+	h := checkHelp(initCmd)
+	if h {
+		return
+	}
+	initCmd.Parse(os.Args[2:])
+	fmt.Fprintln(os.Stdout, "setting up...")
+	err := sqlite.CreateDB()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		return
+	}
+	fmt.Fprintln(os.Stdout, "init complete")
+}
+
 func compileCmd() {
 	var inputDir string
 	var outputDir string
@@ -76,7 +93,6 @@ func compileCmd() {
 		return
 	}
 	compileCmd.Parse(os.Args[2:])
-
 	var layout *template.Template = pandoc.DefaultLayout
 	if templateLayoutPath != "" {
 		var err error
@@ -86,7 +102,6 @@ func compileCmd() {
 			return
 		}
 	}
-
 	fmt.Fprintf(os.Stderr, "content dir: %s\n", inputDir)
 	fmt.Fprintf(os.Stderr, "output dir: %s\n", outputDir)
 	s, err := initServiceWithClean()
@@ -165,6 +180,8 @@ func root() {
 		return
 	}
 	switch os.Args[1] {
+	case "init":
+		initCmd()
 	case "compile":
 		compileCmd()
 	case "serve":

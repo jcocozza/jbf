@@ -12,9 +12,25 @@ import (
 
 const dbPath = "jbf.db"
 
+func CreateDB() error {
+	db, err := sql.Open("sqlite3", dbPath)
+	if err != nil {
+		return err
+	}
+	err = db.Ping()
+	if err != nil {
+		return err
+	}
+	err = Schema(db)
+	if err != nil {
+		return err
+	}
+	return db.Close()
+}
+
 func Connect() (*sql.DB, error) {
 	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
-		return nil, fmt.Errorf("database does not exist. please compile first.")
+		return nil, fmt.Errorf("database does not exist. please init first.")
 	}
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
