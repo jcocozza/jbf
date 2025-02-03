@@ -69,9 +69,9 @@ func (r *SQLiteRepository) ReadMetadataExists(filepath string) bool {
 }
 
 func (r *SQLiteRepository) ReadMetadata(filepath string) (metadata.Metadata, error) {
-	row := r.db.QueryRow("select id, filepath, title, author, created, last_updated, is_home from metadata where filepath = ?", filepath)
+	row := r.db.QueryRow("select id, filepath, title, author, created, last_updated from metadata where filepath = ?", filepath)
 	var m metadata.Metadata
-	err := row.Scan(&m.ID, &m.Filepath, &m.Title, &m.Author, &m.Created, &m.LastUpdated, &m.IsHome)
+	err := row.Scan(&m.ID, &m.Filepath, &m.Title, &m.Author, &m.Created, &m.LastUpdated)
 	if err != nil {
 		return metadata.Metadata{}, err
 	}
@@ -97,7 +97,7 @@ func (r *SQLiteRepository) ReadMetadataFiles() ([]string, error) {
 }
 
 func (r *SQLiteRepository) ReadAllMetadata() ([]metadata.Metadata, error) {
-	rows, err := r.db.Query("select id, filepath, title, author, created, last_updated, is_home from metadata ORDER BY created desc")
+	rows, err := r.db.Query("select id, filepath, title, author, created, last_updated from metadata ORDER BY created desc")
 	if err == sql.ErrNoRows {
 		return []metadata.Metadata{}, nil
 	}
@@ -107,7 +107,7 @@ func (r *SQLiteRepository) ReadAllMetadata() ([]metadata.Metadata, error) {
 	mLst := []metadata.Metadata{}
 	for rows.Next() {
 		m := metadata.Metadata{}
-		err := rows.Scan(&m.ID, &m.Filepath, &m.Title, &m.Author, &m.Created, &m.LastUpdated, &m.IsHome)
+		err := rows.Scan(&m.ID, &m.Filepath, &m.Title, &m.Author, &m.Created, &m.LastUpdated)
 		if err != nil {
 			return nil, err
 		}
@@ -117,8 +117,8 @@ func (r *SQLiteRepository) ReadAllMetadata() ([]metadata.Metadata, error) {
 }
 
 func (r *SQLiteRepository) UpdateMetadata(m metadata.Metadata) error {
-	q := "update metadata set title = ?, author = ?, created = ?, last_updated = ?, is_home = ? where filepath = ?"
-	_, err := r.db.Exec(q, m.Title, m.Author, time.Time(m.Created), time.Time(m.LastUpdated), m.IsHome, m.Filepath)
+	q := "update metadata set title = ?, author = ?, created = ?, last_updated = ? where filepath = ?"
+	_, err := r.db.Exec(q, m.Title, m.Author, time.Time(m.Created), time.Time(m.LastUpdated), m.Filepath)
 	return err
 }
 

@@ -49,7 +49,6 @@ type Metadata struct {
 	Created     Date     `yaml:"created"`
 	LastUpdated Date     `yaml:"last_updated"`
 	Tags        []string `yaml:"tags"`
-	IsHome      bool     `yaml:"home"`
 }
 
 func (m *Metadata) String() string {
@@ -59,9 +58,8 @@ author: %s
 created: %s
 last_updated: %s
 tags: %s
-home: %v
 ---`
-	return fmt.Sprintf(s, m.Title, m.Author, m.Created, m.LastUpdated, m.Tags, m.IsHome)
+	return fmt.Sprintf(s, m.Title, m.Author, m.Created, m.LastUpdated, m.Tags)
 }
 
 func MetadataTemplate() string {
@@ -71,7 +69,6 @@ func MetadataTemplate() string {
 		Created: Date(time.Now()),
 		LastUpdated: Date(time.Now()),
 		Tags: []string{"list", "of", "tags"},
-		IsHome: false,
 	}
 	return m.String()
 }

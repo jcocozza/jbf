@@ -25,15 +25,14 @@ func (h *Handler) HandleAllPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if len(ml) == 0 {
+		var data = struct{ Content string}{ Content: "nothing to see here."}
+		pandoc.DefaultLayout.Execute(w, data)
 		return
 	}
 
 	var currT metadata.Date = ml[0].Created
 	s := ml[0].Created.String() + " <ul>"
 	for _, m := range ml {
-		if m.IsHome {
-			continue
-		}
 		op, err := service.GetOutputPath(m.Filepath, h.baseContentDir, h.htmlContentDir)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

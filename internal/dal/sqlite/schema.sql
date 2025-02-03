@@ -4,8 +4,7 @@ create table if not exists metadata (
     title text,
     author text,
     created datetime,
-    last_updated datetime,
-    is_home boolean
+    last_updated datetime
 );
 
 create table if not exists tag (

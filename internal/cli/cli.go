@@ -1,12 +1,12 @@
 package cli
 
 import (
+	"flag"
+	"fmt"
 	"github.com/jcocozza/jbf/internal/dal/sqlite"
 	"github.com/jcocozza/jbf/internal/pandoc"
 	"github.com/jcocozza/jbf/internal/serve"
 	"github.com/jcocozza/jbf/internal/service"
-	"flag"
-	"fmt"
 	"html/template"
 	"os"
 	"path/filepath"
