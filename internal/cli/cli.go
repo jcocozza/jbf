@@ -19,13 +19,22 @@ const (
 	defaultLayoutPath string = ""
 )
 
-func initService() *service.Service {
+func initService() (*service.Service, error) {
 	db, err := sqlite.Connect()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	dal := sqlite.NewSQLiteRepository(db)
-	return service.NewService(dal)
+	return service.NewService(dal), nil
+}
+
+func initServiceWithClean() (*service.Service, error) {
+	db, err := sqlite.ConnectAndClean()
+	if err != nil {
+		return nil, err
+	}
+	dal := sqlite.NewSQLiteRepository(db)
+	return service.NewService(dal), nil
 }
 
 func help() {
@@ -80,12 +89,16 @@ func compileCmd() {
 
 	fmt.Fprintf(os.Stderr, "content dir: %s\n", inputDir)
 	fmt.Fprintf(os.Stderr, "output dir: %s\n", outputDir)
-	s := initService()
+	s, err := initServiceWithClean()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		return
+	}
 	cfg := service.Config{
 		Layout: layout,
 		Name:   "foo bar",
 	}
-	err := s.Compilation(inputDir, outputDir, staticDir, cfg)
+	err = s.Compilation(inputDir, outputDir, staticDir, cfg)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		return
@@ -105,7 +118,11 @@ func serveCmd() {
 	}
 	serveCmd.Parse(os.Args[2:])
 	fmt.Fprintln(os.Stdout, "running serve")
-	s := initService()
+	s, err := initService()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		return
+	}
 	serve.Server(s, serveDir, contentDir)
 }
 
@@ -125,9 +142,13 @@ func newContentCmd() {
 		fmt.Fprintf(os.Stderr, "name required")
 		return
 	}
-	fmt.Fprintf(os.Stdout, "creating file: %s", filepath.Join(contentDir, name))
-	s := initService()
-	err := s.NewFile(contentDir, name)
+	fmt.Fprintf(os.Stdout, "creating file: %s\n", filepath.Join(contentDir, name))
+	s, err := initService()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		return
+	}
+	err = s.NewFile(contentDir, name)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 		return

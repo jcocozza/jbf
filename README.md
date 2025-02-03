@@ -59,6 +59,7 @@ These will be written to `/static/styles.css` in the compilation directory.
   - note: `/all/other/path` is not affected by this rule.
 - The `/static` path is a reserved set of routes(e.g. `/static/*`). Use this to store css and images if you like
 - At least for now, the database tables are truncated on each recompile. This is because I am lazy. More specifically, it is much easier to just reindex/recompute all the metadata each time.
+- Until I add some kind of `init` command, the `compile` command also serves that purpose. Other commands will not work if `compile` has not been run at least once.
 
 ## Dependencies
 

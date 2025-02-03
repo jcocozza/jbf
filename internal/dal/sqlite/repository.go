@@ -52,8 +52,8 @@ func (r *SQLiteRepository) DeleteTag(tagName string) error {
 }
 
 func (r *SQLiteRepository) CreateMetadata(m metadata.Metadata) (int, error) {
-	q := "insert into metadata (filepath, title, author, created, last_updated, is_home) values (?,?,?,?,?,?)"
-	result, err := r.db.Exec(q, m.Filepath, m.Title, m.Author, time.Time(m.Created), time.Time(m.LastUpdated), m.IsHome)
+	q := "insert into metadata (filepath, title, author, created, last_updated) values (?,?,?,?,?)"
+	result, err := r.db.Exec(q, m.Filepath, m.Title, m.Author, time.Time(m.Created), time.Time(m.LastUpdated))
 	if err != nil {
 		return -1, err
 	}
